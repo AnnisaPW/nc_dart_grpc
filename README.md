@@ -36,15 +36,13 @@
 
   > dart pub global activate protoc_plugin
 
-- [reference 2](https://nostracode.com)
-- [reference 3](https://nostracode.com)
-
 ## 🏷️ Install Protoc for Windows <a name = "section_2"></a>
 
 - <p align="justify">Download the specific release of protobuf for Windows. In my case the latest version was protoc-27.2. Remeber to download the asset for win32 or win64. </p> 
    <a href="https://github.com/protocolbuffers/protobuf/releases?source=post_page-----17493528e6a2--------------------------------">
    Click this link to download Releases Protocol Buffers/Protobuf
    </a>
+  <br>
   <br>
 
 - <p align="justify">Once the download from step above is done we can extract anywhere we’re comfortable and our system user has permission to read. In my case: C:\src\protoc-27.2-win64</p>
