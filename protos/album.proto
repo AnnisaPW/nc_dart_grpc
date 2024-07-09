@@ -13,3 +13,15 @@ message Photo {
   string url = 4;
 
 }
+
+service AlbumService {
+  rpc getAlbums(AlbumRequest) returns (AlbumResponse) {}
+}
+
+message AlbumRequest{
+  int32 id = 1;
+}
+
+message AlbumResponse {
+   repeated Album albums = 1;
+}
