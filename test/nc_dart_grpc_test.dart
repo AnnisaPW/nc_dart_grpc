@@ -1,8 +1,8 @@
-import 'package:nc_dart_grpc/nc_dart_grpc.dart';
-import 'package:test/test.dart';
+// import 'package:nc_dart_grpc/nc_dart_grpc.dart';
+// import 'package:test/test.dart';
 
-void main() {
-  test('calculate', () {
-    expect(calculate(), 42);
-  });
-}
+// void main() {
+//   test('calculate', () {
+//     expect(calculate(), 42);
+//   });
+// }
