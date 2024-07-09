@@ -16,6 +16,9 @@
 - [Project Setup and Packages](#section_1)
 - [Install Proto for Windows](#section_2)
 - [Add Data and Protocol Buffers](#section_3)
+- [Test The Data Class of the Generated File](#section_4)
+- [Define and Generate Remote Procedural Call (RPC) Services](#section_5)
+- [Create GRPC Server and Client for Service](#section_6)
 
 ## 🏷️ Project Setup and Packages <a name = "section_1"></a>
 
@@ -85,9 +88,156 @@
 
 ## 🏷️ Add Data and Protocol Buffers <a name = "section_3"></a>
 
-- Add `src/db.dart` under lib source and this contains the data we're going to be working with.
+- Add `src/db.dart` under lib source and this contains the data we're going to be working with. Here's an example
+
+  ```dart
+  final albums = [
+    {'id': 1, 'title': 'album 1'},
+    {'id': 2, 'title': 'album 2'},
+    {'id': 3, 'title': 'album 3'},
+    {'id': 4, 'title': 'album 4'},
+    {'id': 5, 'title': 'album 5'},
+  ];
+
+  final photos = [
+    {
+      'albumId': 1,
+      'id': 27,
+      'title': 'photo 27',
+      'url': 'https://via.placeholder.com/600/b245',
+    },
+    {
+      'albumId': 2,
+      'id': 28,
+      'title': 'photo 28',
+      'url': 'https://via.placeholder.com/600/b245',
+    },
+    {
+      'albumId': 3,
+      'id': 29,
+      'title': 'photo 29',
+      'url': 'https://via.placeholder.com/600/b245',
+    },
+    {
+      'albumId': 4,
+      'id': 30,
+      'title': 'photo 30',
+      'url': 'https://via.placeholder.com/600/b245',
+    },
+    {
+      'albumId': 5,
+      'id': 31,
+      'title': 'photo 31',
+      'url': 'https://via.placeholder.com/600/b245',
+    },
+  ];
+  ```
 
 - Define a structure that represents those data structures we're going to be working with so that brings us to `protos/album.proto`. This is an example of a file that uses protocol buffer syntax.
 
+  ```proto
+  syntax = "proto3";
+  message Album {
+    int32 id = 1;
+    string title = 2;
+  }
+
+  message Photo {
+    int32 albumId = 1;
+    int32 id = 2;
+    string title = 3;
+    string url = 4;
+  }
+  ```
+
 - Generate dart data classes using protoc compiler. The command we're gonna run is:
   > protoc --dart_out=grpc:lib/src/generated -Iprotos protos/album.proto
+
+## 🏷️ Test The Data Class of the Generated File <a name = "section_4"></a>
+
+- Export our database as well as our generated files in `lib/nc_dart_grpc.dart`
+  ```dart
+  export 'src/db.dart';
+  export 'src/generated/album.pb.dart';
+  export 'src/generated/album.pbenum.dart';
+  export 'src/generated/album.pbjson.dart';
+  ```
+- In `bin/nc_dart_grpc.dart`, create an album and then specify the fields and print that out. Here's an example inside that file
+
+  ```dart
+  final album = Album(id: 1, title: 'Album title');
+  print('--- new album ---');
+  print(album);
+
+  final album2 = Album.fromJson(
+    '{"1": ${albums[0]['id']}, "2": "${albums[0]['title']}"}',
+  );
+
+  print('--- album 2 from json ---');
+
+  print(album2);
+
+  print('--- album deep copy ---');
+  print(album2.deepCopy());
+
+  print('--- album freeze ---');
+  print(album2.freeze());
+
+  print('--- album rebuild ---');
+  final albumRebuild = album2.rebuild(
+    (album) {
+      album.setField(2, 'album title updated');
+    },
+  );
+  print(albumRebuild);
+  print(album.writeToJson());
+  ```
+
+- You can run those codes above using `F5` and see the result on Debug Console
+
+## 🏷️ Define and Generate Remote Procedural Call (RPC) Services <a name = "section_5"></a>
+
+- Define our PC Services in our Protocol Buffer File
+  ```proto
+  service AlbumService {
+  rpc getAlbums(AlbumRequest) returns (AlbumResponse) {}
+  }
+  ```
+- Create the messages for album request and album response. Album request will take in an id field and then album response will take in a list of albums and to represent a list in the protocol buffer language, we just need to specify the repeated keyword.
+
+  ```proto
+  message AlbumRequest{
+  int32 id = 1;
+  }
+
+  message AlbumResponse {
+    repeated Album albums = 1;
+  }
+  ```
+
+- Run our compiler again which will generate the relevant service classes for us.
+  > protoc --dart_out=grpc:lib/src/generated -Iprotos protos/album.proto
+
+## 🏷️ Create GRPC Server and Client for Service <a name = "section_6"></a>
+
+- Create a `server.dart` file in the bin folder
+- In `server.dart`, import the gRPC library then create a class called AlbumService extends AlbumServiceBase which is from the generated file
+
+  ```dart
+  import 'package:grpc/src/server/call.dart';
+  import 'package:nc_dart_grpc/nc_dart_grpc.dart';
+
+  class AlbumService extends AlbumServiceBase  {
+    @override
+    Future<AlbumResponse> getAlbums(ServiceCall call, AlbumRequest request) {
+      // TODO: implement getAlbums
+      throw UnimplementedError();
+    }
+
+  }
+  ```
+
+- Add new export in `lib/nc_dart_grpc.dart`
+  ```dart
+  export 'package:nc_dart_grpc/src/generated/album.pbgrpc.dart';
+  ```
