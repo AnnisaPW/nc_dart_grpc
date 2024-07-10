@@ -28,6 +28,19 @@ class AlbumService extends AlbumServiceBase {
   }
 }
 
+// helpers
+
+List<Album> findAlbums(int id) {
+  return albums
+      .where(
+        (element) => element['id'] == id,
+      )
+      .map(convertToAlbum)
+      .toList();
+}
+
+Album convertToAlbum(Map albumMap) => Album.fromJson('{"1": ${albumMap['id']}, "2": "${albumMap['title']}"}');
+
 void main() async {
   final server = Server.create(
     services: [
