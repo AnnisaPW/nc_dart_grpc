@@ -26,6 +26,25 @@ class AlbumService extends AlbumServiceBase {
         .toList();
     return AlbumResponse()..albums.addAll(albumList);
   }
+
+  @override
+  Future<AlbumResponse> getALbumsWithPhotos(ServiceCall call, AlbumRequest request) async {
+    if (request.id > 0) {
+      final album = findAlbums(request.id)[0];
+      final albumPhotos = findPhotos(album.id);
+      return AlbumResponse()..albums.add(album..photos.addAll(albumPhotos));
+    }
+    return AlbumResponse()
+      ..albums.addAll(
+        albums.map(
+          (e) {
+            final album = convertToAlbum(e);
+            final albumPhotos = findPhotos(album.id);
+            return album..photos.addAll(albumPhotos);
+          },
+        ),
+      );
+  }
 }
 
 // helpers
@@ -39,7 +58,15 @@ List<Album> findAlbums(int id) {
       .toList();
 }
 
+List<Photo> findPhotos(int id) {
+  return photos.where((element) => element['albumId'] == id).map(convertToPhoto).toList();
+}
+
 Album convertToAlbum(Map albumMap) => Album.fromJson('{"1": ${albumMap['id']}, "2": "${albumMap['title']}"}');
+
+Photo convertToPhoto(Map photo) => Photo.fromJson(
+      '{"1": ${photo['albumId']}, "2": ${photo['id']}, "3": "${photo['title']}", "4": "${photo['url']}"}',
+    );
 
 void main() async {
   final server = Server.create(

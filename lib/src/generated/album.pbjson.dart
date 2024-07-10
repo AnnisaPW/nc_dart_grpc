@@ -19,12 +19,14 @@ const Album$json = {
   '2': [
     {'1': 'id', '3': 1, '4': 1, '5': 5, '10': 'id'},
     {'1': 'title', '3': 2, '4': 1, '5': 9, '10': 'title'},
+    {'1': 'photos', '3': 3, '4': 3, '5': 11, '6': '.Photo', '10': 'photos'},
   ],
 };
 
 /// Descriptor for `Album`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List albumDescriptor = $convert.base64Decode(
-    'CgVBbGJ1bRIOCgJpZBgBIAEoBVICaWQSFAoFdGl0bGUYAiABKAlSBXRpdGxl');
+    'CgVBbGJ1bRIOCgJpZBgBIAEoBVICaWQSFAoFdGl0bGUYAiABKAlSBXRpdGxlEh4KBnBob3Rvcx'
+    'gDIAMoCzIGLlBob3RvUgZwaG90b3M=');
 
 @$core.Deprecated('Use photoDescriptor instead')
 const Photo$json = {
