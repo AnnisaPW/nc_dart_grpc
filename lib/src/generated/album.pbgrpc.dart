@@ -29,6 +29,10 @@ class AlbumServiceClient extends $grpc.Client {
       '/AlbumService/getALbumsWithPhotos',
       ($0.AlbumRequest value) => value.writeToBuffer(),
       ($core.List<$core.int> value) => $0.AlbumResponse.fromBuffer(value));
+  static final _$getPhotos = $grpc.ClientMethod<$0.AlbumRequest, $0.Photo>(
+      '/AlbumService/getPhotos',
+      ($0.AlbumRequest value) => value.writeToBuffer(),
+      ($core.List<$core.int> value) => $0.Photo.fromBuffer(value));
 
   AlbumServiceClient($grpc.ClientChannel channel,
       {$grpc.CallOptions? options,
@@ -42,6 +46,10 @@ class AlbumServiceClient extends $grpc.Client {
 
   $grpc.ResponseFuture<$0.AlbumResponse> getALbumsWithPhotos($0.AlbumRequest request, {$grpc.CallOptions? options}) {
     return $createUnaryCall(_$getALbumsWithPhotos, request, options: options);
+  }
+
+  $grpc.ResponseStream<$0.Photo> getPhotos($0.AlbumRequest request, {$grpc.CallOptions? options}) {
+    return $createStreamingCall(_$getPhotos, $async.Stream.fromIterable([request]), options: options);
   }
 }
 
@@ -64,6 +72,13 @@ abstract class AlbumServiceBase extends $grpc.Service {
         false,
         ($core.List<$core.int> value) => $0.AlbumRequest.fromBuffer(value),
         ($0.AlbumResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.AlbumRequest, $0.Photo>(
+        'getPhotos',
+        getPhotos_Pre,
+        false,
+        true,
+        ($core.List<$core.int> value) => $0.AlbumRequest.fromBuffer(value),
+        ($0.Photo value) => value.writeToBuffer()));
   }
 
   $async.Future<$0.AlbumResponse> getAlbums_Pre($grpc.ServiceCall call, $async.Future<$0.AlbumRequest> request) async {
@@ -74,6 +89,11 @@ abstract class AlbumServiceBase extends $grpc.Service {
     return getALbumsWithPhotos(call, await request);
   }
 
+  $async.Stream<$0.Photo> getPhotos_Pre($grpc.ServiceCall call, $async.Future<$0.AlbumRequest> request) async* {
+    yield* getPhotos(call, await request);
+  }
+
   $async.Future<$0.AlbumResponse> getAlbums($grpc.ServiceCall call, $0.AlbumRequest request);
   $async.Future<$0.AlbumResponse> getALbumsWithPhotos($grpc.ServiceCall call, $0.AlbumRequest request);
+  $async.Stream<$0.Photo> getPhotos($grpc.ServiceCall call, $0.AlbumRequest request);
 }

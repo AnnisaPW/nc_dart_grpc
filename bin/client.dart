@@ -16,11 +16,21 @@ void main() async {
   // response = await stub.getAlbums(AlbumRequest()..id = 1);
   // print('Response received: ${response.writeToJsonMap()}');
 
-  var response2 = await stub.getALbumsWithPhotos(AlbumRequest()..id = 3);
-  print('Got response! $response2');
-  print('Got response! ${response2.albums[0]}');
-  print('Got response! ${response2.albums[0].writeToJson()}');
-  print('Got response! ${response2.albums[0].writeToJsonMap()}');
+  // var response2 = await stub.getALbumsWithPhotos(AlbumRequest()..id = 3);
+  // print('Got response! $response2');
+  // print('Got response! ${response2.albums[0]}');
+  // print('Got response! ${response2.albums[0].writeToJson()}');
+  // print('Got response! ${response2.albums[0].writeToJsonMap()}');
+
+  var photoStream = stub.getPhotos(AlbumRequest());
+  await for (var photo in photoStream) {
+    print('Received photo! ${photo.url}');
+  }
+
+  photoStream = stub.getPhotos(AlbumRequest()..id = 3);
+  await for (var photo in photoStream) {
+    print('Received filtered photo! ${photo.url}');
+  }
 
   await channel.shutdown();
 }
